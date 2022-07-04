@@ -14,4 +14,19 @@ Escriba el resultado a la carpeta `output` de directorio de trabajo.
         >>> Escriba su respuesta a partir de este punto <<<
 */
 
+DROP TABLE IF EXISTS data;
+DROP TABLE IF EXISTS valor_minimo;
+CREATE TABLE data (
+        letter STRING,
+        fecha DATE,
+        valor INT)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+TBLPROPERTIES ('skip.header.line.count'='0');
 
+LOAD DATA LOCAL INPATH 'data.tsv' OVERWRITE INTO TABLE data;
+
+CREATE TABLE valor_minimo AS SELECT DISTINCT valor FROM data;
+
+INSERT OVERWRITE LOCAL DIRECTORY './output' 
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM valor_minimo ORDER BY valor LIMIT 5;
